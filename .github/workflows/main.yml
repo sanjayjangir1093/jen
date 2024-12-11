@@ -16,8 +16,11 @@ jobs:
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry-type: public  # Change to 'public' if using public ECR
-          region: ${{ secrets.AWS_REGION }}  # Use the region from your secrets
+          registry-type: private  # Change to 'public' if using public ECR
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}  # Set the region from your secrets
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Build Docker image
         run: |
