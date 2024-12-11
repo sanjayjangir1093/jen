@@ -3,19 +3,35 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/sanjayjangir1093/jen.git'
+                script {
+                    try {
+                        git branch: 'main', url: 'https://github.com/sanjayjangir1093/jen.git'
+                    } catch (Exception e) {
+                        error "Checkout failed: ${e.message}"
+                    }
+                }
             }
         }
         stage('Build') {
             steps {
-                sh 'npm install'
-                sh 'docker build -t nodejs-app .'
+                script {
+                    try {
+                        sh 'npm install'
+                        sh 'docker build -t nodejs-app .'
+                    } catch (Exception e) {
+                        error "Build failed: ${e.message}"
+                    }
+                }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'kubectl apply -f k8s/deployment.yaml'
+                    try {
+                        sh 'kubectl apply -f k8s/deployment.yaml'
+                    } catch (Exception e) {
+                        error "Deployment failed: ${e.message}"
+                    }
                 }
             }
         }
